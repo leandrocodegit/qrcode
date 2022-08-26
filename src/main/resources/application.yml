@@ -1,0 +1,30 @@
+server:
+  port: 9094
+dir:
+  qrcode: qrcode
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      host: localhost
+      port: 27017
+      database: qrcode
+  activemq:
+    packages:
+      trust-all:
+integration:
+  produto:
+    url: http://localhost:9092
+  parceiro:
+    url: http://localhost:9093
+feign:
+  hystrix:
+    enabled: true
+  circuitbreaker:
+    enabled: true
+  client:
+    config:
+      feignName:
+        connectTimeout: 5000
+        readTimeout: 5000
+
