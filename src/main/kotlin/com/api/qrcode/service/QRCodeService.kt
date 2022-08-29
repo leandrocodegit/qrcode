@@ -1,5 +1,6 @@
 package com.api.qrcode.service
 
+import com.api.qrcode.consumer.RabbitMQListener
 import com.api.qrcode.controller.request.QRCodeRequest
 import com.api.qrcode.controller.request.QRCodeStatusRequest
 import com.api.qrcode.enuns.CodeError
@@ -11,6 +12,7 @@ import com.api.qrcode.repository.ImageStore
 import com.api.qrcode.repository.QRCodeRepository
 import com.api.qrcode.rest.RestParceiro
 import com.api.qrcode.rest.RestProduto
+import com.google.gson.Gson
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.content.fs.io.FileSystemResourceLoader
@@ -23,10 +25,17 @@ class QRCodeService(
     private val restProduto: RestProduto,
     private val restParceiro: RestParceiro,
     private val imageStore: ImageStore,
-    private val qrcode: QRCodeGenarate
+    private val qrcode: QRCodeGenarate,
+    private val produtoService: ProdutoService
 ) {
 
-    fun listaTodosQRCode(page: Pageable) = qrCodeRepository.findAll(page)
+    fun listaTodosQRCode(page: Pageable) =
+        qrCodeRepository.findAll(page)
+    fun listaTodosQRCodePorParceiro(page: Pageable, cnpj: String) =
+        qrCodeRepository.findAllByParceiro(cnpj)
+
+    fun listaTodosQRCodePorProduto(page: Pageable, codigo: String) =
+        qrCodeRepository.findAllByProduto(produtoService.buscaProdutoBycodigo(codigo))
 
     fun buscaQRCode(id: String): QRCode {
 
@@ -53,7 +62,7 @@ class QRCodeService(
     fun associarQRCode(request: QRCodeRequest) =
         buscaQRCode(request.id).apply {
             parceiro = restParceiro.getParceiro(request.cnpj)
-            produto = restProduto.getProduto(request.codigoProduto)
+            produto = produtoService.buscaProdutoBycodigo(request.codigo)
         }.apply {
             if (parceiro?.status != Status.ATIVO)
                 throw EntityResponseException("Operacao nao permitida parceiro inativo", CodeError.INACTIVE)
@@ -77,6 +86,22 @@ class QRCodeService(
             qrCodeRepository.save(this)
         }
 
+    fun alteraStatusListaQRCode(lista: List<QRCode>, status: Status) {
+        lista.forEach {
+            it.status = status
+        }
+        println(Gson().toJson(lista))
+        qrCodeRepository.saveAll(lista)
+    }
+
+    fun atualizaPrecoListaQRCode(lista: List<QRCode>) {
+        lista.forEach {
+            it.preco = ((it.produto!!.preco * (it.parceiro!!.comissao / 100)) + it.produto!!.preco)
+        }
+        println(Gson().toJson(lista))
+        qrCodeRepository.saveAll(lista)
+    }
+
     fun deleteQRCode(id: ObjectId, force: Boolean) {
         buscaQRCode(id.toString()).apply {
             if(isImpresso && force.not())
@@ -92,6 +117,7 @@ class QRCodeService(
         isImpresso = isPrint
         qrCodeRepository.save(this)
     }.isImpresso
+
 
     private fun isValidaStatusParceiroProduto(codigo: String, cnpj: String) =
         (restParceiro.getParceiro(cnpj).status == Status.ATIVO

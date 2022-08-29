@@ -6,7 +6,7 @@ class QRCodeRequest(
     @field:NotBlank
     var id: String,
     @field:NotBlank
-    var codigoProduto: String,
+    var codigo: String,
     @field:NotBlank
     var cnpj: String
 )

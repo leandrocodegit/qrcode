@@ -3,12 +3,15 @@ server:
 dir:
   qrcode: qrcode
 spring:
+  mvc.path match:
+    matching-strategy: ant-path-matcher
   data:
     mongodb:
       authentication-database: admin
       host: localhost
       port: 27017
       database: qrcode
+      show-sql: true
   activemq:
     packages:
       trust-all:
@@ -17,11 +20,6 @@ integration:
     url: http://localhost:9092
   parceiro:
     url: http://localhost:9093
-feign:
-  hystrix:
-    enabled: true
-  circuitbreaker:
-    enabled: true
   client:
     config:
       feignName:

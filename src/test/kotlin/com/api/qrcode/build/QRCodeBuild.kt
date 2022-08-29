@@ -16,7 +16,7 @@ class QRCodeBuild {
             "image/png"))
         var produto = Produto("7000","Jogo de 6 taças", 170.0, Estoque(1L,10,0),
         "",
-        "",true)
+        "","Bohemia",true)
 
         fun qrcode() = createQRCode(ObjectId.get(), 0.0, Status.ATIVO)
         fun qrcode(id: ObjectId) = createQRCode(id, 0.0, Status.ATIVO)

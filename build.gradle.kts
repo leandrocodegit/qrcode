@@ -29,7 +29,7 @@ dependencies {
 	implementation("com.google.code.gson:gson:2.9.0")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-	implementation("io.springfox:springfox-swagger2:3.0.0")
+	implementation("io.springfox:springfox-swagger2:2.9.2")
 	implementation("io.springfox:springfox-swagger-ui:2.9.2")
 	implementation("com.google.zxing:core:3.5.0")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")

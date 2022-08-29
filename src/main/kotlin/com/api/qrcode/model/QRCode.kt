@@ -2,9 +2,11 @@ package com.api.qrcode.model
 
 import com.api.qrcode.enuns.Status
 import org.bson.types.ObjectId
+import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 import java.sql.Timestamp
 import javax.persistence.Id
+import javax.persistence.OneToOne
 
 @Document
 class QRCode(
@@ -13,6 +15,7 @@ class QRCode(
     var codigo: Int,
     var preco: Double,
     var parceiro: Parceiro?,
+    @DBRef
     var produto: Produto?,
     var desconto: Double?,
     var imagem: Imagem?,

@@ -20,6 +20,10 @@ class QRCodeController(
     fun listatodosQRCode(@PageableDefault(size = 20) page: Pageable) =
         ResponseEntity.ok(qrCodeService.listaTodosQRCode(page).map { mapper.toResponse(it) })
 
+    @GetMapping("/list")
+    fun listatodosQRCodePorParceiro(@PageableDefault(size = 20) page: Pageable, @RequestBody request: QRCodeRequest) =
+        ResponseEntity.ok(qrCodeService.listaTodosQRCodePorParceiro(page, request.cnpj).map { mapper.toResponse(it) })
+
     @GetMapping("/{id}")
     fun buscaQRcodePorId(@PathVariable id: String) =
         ResponseEntity.ok(mapper.toResponse(qrCodeService.buscaQRCode(id)))

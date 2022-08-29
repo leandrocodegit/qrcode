@@ -16,14 +16,14 @@ class SwaggerConfig {
     @Bean
     fun api() : Docket =  Docket(DocumentationType.SWAGGER_2)
             .select()
-            .apis((RequestHandlerSelectors.basePackage("com.api.parceiro.controller")))
+            .apis((RequestHandlerSelectors.basePackage("com.api.qrcode.controller")))
             .paths(PathSelectors.any())
             .build()
 
             .apiInfo(
                     ApiInfoBuilder()
-                            .title("Parceiro")
-                            .description("Documentação api parceiros")
+                            .title("QRCode")
+                            .description("Documentação api qrcode")
                             .build())
 
 }
