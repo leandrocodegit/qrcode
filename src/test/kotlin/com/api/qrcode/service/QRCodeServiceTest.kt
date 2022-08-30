@@ -11,6 +11,7 @@ import com.api.qrcode.model.Imagem
 import com.api.qrcode.model.Produto
 import com.api.qrcode.model.QRCode
 import com.api.qrcode.repository.ImageStore
+import com.api.qrcode.repository.ParceiroRepository
 import com.api.qrcode.repository.ProdutoRepository
 import com.api.qrcode.repository.QRCodeRepository
 import com.api.qrcode.rest.RestParceiro
@@ -41,8 +42,12 @@ class QRCodeServiceTest {
     private lateinit var qrCodeService: QRCodeService
     @InjectMockKs
     private lateinit var produtoService: ProdutoService
+    @InjectMockKs
+    private lateinit var parceiroService: ParceiroService
     @MockK
     private lateinit var produtoRepository: ProdutoRepository
+    @MockK
+    private lateinit var parceiroRepository: ParceiroRepository
     @MockK
     private lateinit var qrCodeRepository: QRCodeRepository
     @MockK
@@ -106,7 +111,7 @@ class QRCodeServiceTest {
         every { produtoRepository.findById(any()) } returns Optional.of(Produto("7000","Jogo de 6 taças", 100.0, Estoque(1L,10,0),
             "",
             "","Bohemia",true))
-        every { restParceiro.getParceiro(qrcode.parceiro!!.cnpj) } returns qrcode.parceiro!!
+        every { parceiroRepository.findById(qrcode.parceiro!!.cnpj) } returns Optional.of(qrcode.parceiro!!)
         every { qrCodeRepository.save(qrcode) } returns qrcode
 
         val saveQRCode = qrCodeService.associarQRCode(QRCodeRequest(qrcode.id.toString(),qrcode.produto!!.codigo,qrcode.parceiro!!.cnpj))
@@ -117,7 +122,7 @@ class QRCodeServiceTest {
 
         verify (exactly = 1) {  qrCodeRepository.findById(qrcode.id)  }
         verify (exactly = 1) {  produtoRepository.findById(any())  }
-        verify (exactly = 1) {  restParceiro.getParceiro(qrcode.parceiro!!.cnpj) }
+        verify (exactly = 1) {  parceiroRepository.findById(qrcode.parceiro!!.cnpj) }
     }
 
     @Test
@@ -131,13 +136,13 @@ class QRCodeServiceTest {
         every { produtoRepository.findById(qrcode.produto!!.codigo) } returns Optional.of(Produto("7000","Jogo de 6 taças", 100.0, Estoque(1L,10,0),
             "",
             "","Bohemia",true))
-        every { restParceiro.getParceiro(qrcode.parceiro!!.cnpj) } returns qrcode.parceiro!!
+        every { parceiroRepository.findById(qrcode.parceiro!!.cnpj) } returns Optional.of(qrcode.parceiro!!)
 
         assertThrows<EntityResponseException> { qrCodeService.associarQRCode(QRCodeRequest(qrcode.id.toString(),qrcode.produto!!.codigo,qrcode.parceiro!!.cnpj)) }
 
         verify (exactly = 1) {  qrCodeRepository.findById(qrcode.id)  }
         verify (exactly = 1) {  produtoRepository.findById(qrcode.produto!!.codigo)  }
-        verify (exactly = 1) {  restParceiro.getParceiro(qrcode.parceiro!!.cnpj) }
+        verify (exactly = 1) {  parceiroRepository.findById(qrcode.parceiro!!.cnpj) }
     }
 
     @Test
@@ -151,13 +156,13 @@ class QRCodeServiceTest {
         every { produtoRepository.findById(qrcode.produto!!.codigo) } returns Optional.of(Produto("7000","Jogo de 6 taças", 100.0, Estoque(1L,10,0),
             "",
             "","Bohemia",false))
-        every { restParceiro.getParceiro(qrcode.parceiro!!.cnpj) } returns qrcode.parceiro!!
+        every { parceiroRepository.findById(qrcode.parceiro!!.cnpj) } returns Optional.of(qrcode.parceiro!!)
 
         assertThrows<EntityResponseException> { qrCodeService.associarQRCode(QRCodeRequest(qrcode.id.toString(),qrcode.produto!!.codigo,qrcode.parceiro!!.cnpj)) }
 
         verify (exactly = 1) {  qrCodeRepository.findById(qrcode.id)  }
         verify (exactly = 1) {  produtoRepository.findById(qrcode.produto!!.codigo)  }
-        verify (exactly = 1) {  restParceiro.getParceiro(qrcode.parceiro!!.cnpj) }
+        verify (exactly = 1) {  parceiroRepository.findById(qrcode.parceiro!!.cnpj) }
     }
 
     @Test
@@ -194,7 +199,7 @@ class QRCodeServiceTest {
         every { restProduto.getProduto(qrcode.produto!!.codigo) } returns Produto("7000","Jogo de 6 taças", 100.0, Estoque(1L,10,0),
             "",
             "","Bohemia",false)
-        every { restParceiro.getParceiro(qrcode.parceiro!!.cnpj) } returns qrcode.parceiro!!
+        every { parceiroRepository.findById(qrcode.parceiro!!.cnpj) } returns Optional.of(qrcode.parceiro!!)
         every { qrCodeRepository.save(qrcode) } returns qrcode
         every { qrCodeRepository.findById(qrcode.id) } returns Optional.of(qrcode)
 
@@ -226,6 +231,7 @@ class QRCodeServiceTest {
         assertThrows<EntityResponseException> {qrCodeService.atualizaStatusQRCode(QRCodeStatusRequest(qrcode.id, Status.ATIVO))}
 
         verify (exactly = 1) {  qrCodeRepository.findById(qrcode.id)  }
+        verify (exactly = 1) { restParceiro.getParceiro(qrcode.parceiro!!.cnpj) }
         verify (exactly = 0) { qrCodeRepository.save(qrcode)  }
     }
 

@@ -14,8 +14,6 @@ import java.util.Optional
 interface QRCodeRepository: MongoRepository<QRCode, ObjectId>{
 
     fun findByCodigo(codigo: Int): Optional<QRCode>
-    @Query("{ 'parceiro.cnpj':  ?0 }")
-    fun findAllByParceiro(cnpj: String): List<QRCode>
-    //@Query("{ 'produto._id' : ?0}")
+    fun findAllByParceiro(parceiro: Parceiro): List<QRCode>
     fun findAllByProduto(produto: Produto): List<QRCode>
 }

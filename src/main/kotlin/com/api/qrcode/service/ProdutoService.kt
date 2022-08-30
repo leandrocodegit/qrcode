@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service
 class ProdutoService(
     private val produtoRepository: ProdutoRepository
 ) {
-
     fun buscaProdutoBycodigo(codigo: String) = produtoRepository.findById(codigo).orElseThrow {
         throw EntityResponseException("Produto nao encontrado", CodeError.NOT_FOUND)
     }

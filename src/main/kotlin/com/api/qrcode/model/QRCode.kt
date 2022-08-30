@@ -14,6 +14,7 @@ class QRCode(
     var id: ObjectId,
     var codigo: Int,
     var preco: Double,
+    @DBRef
     var parceiro: Parceiro?,
     @DBRef
     var produto: Produto?,

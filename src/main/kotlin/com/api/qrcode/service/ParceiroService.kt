@@ -12,12 +12,21 @@ class ParceiroService(
     private val parceiroRepository: ParceiroRepository
 ) {
 
-    fun buscaParceiroByCNPJ(cnpj: String) = parceiroRepository.findByCnpj(cnpj).orElseThrow {
+    fun buscaParceiroByCNPJ(cnpj: String) = parceiroRepository.findById(cnpj).orElseThrow {
         throw EntityResponseException("Parceiro nao encontrado", CodeError.NOT_FOUND)
     }
 
+    fun atualizaParceiro(parceiro: Parceiro): Parceiro{
+        parceiro.cnpj = buscaParceiroByCNPJ(parceiro.cnpj).cnpj
+        return  parceiroRepository.save(parceiro)
+    }
     fun createParceiro(parceiro: Parceiro){
         if(parceiroRepository.findByCnpj(parceiro.cnpj).isEmpty)
             parceiroRepository.save(parceiro)
+    }
+
+    fun deleteParceiro(cnpj: String){
+        buscaParceiroByCNPJ(cnpj)
+        parceiroRepository.deleteById(cnpj)
     }
 }

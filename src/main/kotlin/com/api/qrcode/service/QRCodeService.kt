@@ -26,13 +26,14 @@ class QRCodeService(
     private val restParceiro: RestParceiro,
     private val imageStore: ImageStore,
     private val qrcode: QRCodeGenarate,
-    private val produtoService: ProdutoService
+    private val produtoService: ProdutoService,
+    private val parceiroService: ParceiroService
 ) {
 
     fun listaTodosQRCode(page: Pageable) =
         qrCodeRepository.findAll(page)
     fun listaTodosQRCodePorParceiro(page: Pageable, cnpj: String) =
-        qrCodeRepository.findAllByParceiro(cnpj)
+        qrCodeRepository.findAllByParceiro(parceiroService.buscaParceiroByCNPJ(cnpj))
 
     fun listaTodosQRCodePorProduto(page: Pageable, codigo: String) =
         qrCodeRepository.findAllByProduto(produtoService.buscaProdutoBycodigo(codigo))
@@ -61,7 +62,7 @@ class QRCodeService(
 
     fun associarQRCode(request: QRCodeRequest) =
         buscaQRCode(request.id).apply {
-            parceiro = restParceiro.getParceiro(request.cnpj)
+            parceiro = parceiroService.buscaParceiroByCNPJ(request.cnpj)
             produto = produtoService.buscaProdutoBycodigo(request.codigo)
         }.apply {
             if (parceiro?.status != Status.ATIVO)
