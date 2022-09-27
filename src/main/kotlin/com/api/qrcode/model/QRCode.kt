@@ -1,6 +1,7 @@
 package com.api.qrcode.model
 
 import com.api.qrcode.enuns.Status
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.bson.types.ObjectId
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
@@ -19,10 +20,11 @@ class QRCode(
     @DBRef
     var produto: Produto?,
     var desconto: Double?,
+    var multiDesconto: Boolean,
     var imagem: Imagem?,
     var status: Status,
     var isImpresso: Boolean
 ){
-    constructor():this(ObjectId.get(),0,0.0,null, null, 0.0,null,Status.INATIVO,false){}
-    constructor(id: ObjectId):this(id,0,0.0,null, null,0.0,null,Status.INATIVO,false){}
+    constructor():this(ObjectId.get(),0,0.0,null, null, 0.0,false,null,Status.INATIVO,false){}
+    constructor(id: ObjectId):this(id,0,0.0,null, null,0.0,false,null,Status.INATIVO,false){}
 }

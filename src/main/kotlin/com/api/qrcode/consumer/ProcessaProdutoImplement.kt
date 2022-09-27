@@ -23,7 +23,6 @@ class ProcessaProdutoImplement(
 
     override fun processaCreateEntity(fromID: String) {
         produtoService.createProduto(restProduto.getProduto(fromID))
-        processaUpdatePrecoQRCode(fromID)
         processaStatusQRCode(fromID, Status.INATIVO)
     }
 
@@ -59,6 +58,7 @@ class ProcessaProdutoImplement(
     }
 
     override fun processaUpdatePrecoQRCode(fromID: String) {
+        produtoService.atualizaProduto(restProduto.getProduto(fromID))
         qrCodeService.atualizaPrecoListaQRCode(
             qrCodeService.listaTodosQRCodePorProduto(Pageable.unpaged(), fromID)
         )

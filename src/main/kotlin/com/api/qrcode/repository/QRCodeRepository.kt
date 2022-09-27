@@ -16,4 +16,7 @@ interface QRCodeRepository: MongoRepository<QRCode, ObjectId>{
     fun findByCodigo(codigo: Int): Optional<QRCode>
     fun findAllByParceiro(parceiro: Parceiro): List<QRCode>
     fun findAllByProduto(produto: Produto): List<QRCode>
+
+    fun findByIdAndPreco(id: String, preco: Double):Optional<QRCode>
+
 }

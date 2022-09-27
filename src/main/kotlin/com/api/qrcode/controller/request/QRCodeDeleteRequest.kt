@@ -6,5 +6,4 @@ import java.sql.Timestamp
 class QRCodeChangeRequest(
     var id: ObjectId,
     var timestamp: Int
-) {
-}
+)

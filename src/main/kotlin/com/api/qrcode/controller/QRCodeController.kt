@@ -1,6 +1,7 @@
 package com.api.qrcode.controller
 
 import com.api.qrcode.controller.request.QRCodeRequest
+import com.api.qrcode.controller.request.QRCodeValidRequest
 import com.api.qrcode.mapper.QRCodeMapper
 import com.api.qrcode.service.QRCodeService
 import org.bson.types.ObjectId
@@ -32,6 +33,12 @@ class QRCodeController(
     fun criarNovoQRCode() =
         ResponseEntity.ok(mapper.toResponse(qrCodeService.criarQRCode()))
 
+    @PostMapping("/valid")
+    fun validaLista(@RequestBody list: List<QRCodeValidRequest>) =
+        qrCodeService.validaListaQRCode(list).also {
+            list.forEach { println("${it.id} ${it.preco}") }
+        }
+
     @PutMapping
     fun associarQRCode(@RequestBody request: QRCodeRequest) =
         ResponseEntity.ok(mapper.toResponse(qrCodeService.associarQRCode(request)))
@@ -40,4 +47,5 @@ class QRCodeController(
     fun deleteQRCode(@PathVariable id: ObjectId){
         qrCodeService.deleteQRCode(id,false)
     }
+
 }

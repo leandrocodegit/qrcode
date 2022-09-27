@@ -1,15 +1,18 @@
 server:
-  port: 9094
+  port: 9095
 dir:
-  qrcode: qrcode
+  qrcode: /workspace/imagens
 spring:
-  mvc.path match:
-    matching-strategy: ant-path-matcher
+  rabbitmq:
+    #host: localhost
+    host: 172.19.0.2
   data:
     mongodb:
-      authentication-database: admin
-      host: localhost
+      authentication-database: qrcode
+      host: 192.168.1.200
       port: 27017
+      username: admin
+      password: admin
       database: qrcode
       show-sql: true
   activemq:
@@ -17,9 +20,12 @@ spring:
       trust-all:
 integration:
   produto:
-    url: http://localhost:9092
+    url: http://172.19.0.4:9094
+    #url: localhost:9092
   parceiro:
-    url: http://localhost:9093
+    url: http://172.19.0.3:9093
+    #url: localhost:9093
+feign:
   client:
     config:
       feignName:

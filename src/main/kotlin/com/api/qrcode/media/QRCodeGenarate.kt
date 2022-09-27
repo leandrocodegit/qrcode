@@ -7,15 +7,15 @@ import com.google.zxing.common.BitMatrix
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.content.fs.io.FileSystemResourceLoader
 import org.springframework.stereotype.Component
-import java.awt.*
+import java.awt.Color
+import java.awt.Font
+import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import java.io.File
 import java.util.*
 import javax.imageio.ImageIO
-import kotlin.io.path.Path
 
 @Component
 class QRCodeGenarate {
@@ -23,15 +23,17 @@ class QRCodeGenarate {
     @Autowired
     private lateinit var pathRoot: FileSystemResourceLoader
 
-    fun gerarQR(id: String, cogigo: Int):Imagem {
-       var imagem = Imagem(
+    fun gerarQR(id: String, cogigo: Int): Imagem {
+        var imagem = Imagem(
             UUID.randomUUID().toString(),
             0,
-            "image/png")
-        val size = 250
-        val fileType = "png"
-        val myFile = File("${pathRoot.rootResource.path}${imagem.contentId}")
+            "image/png"
+        )
         try {
+            val size = 250
+            val fileType = "png"
+            val myFile = File("${pathRoot.rootResource.path}${imagem.contentId}")
+
             val hintMap: MutableMap<EncodeHintType, Any> = EnumMap<EncodeHintType, Any>(
                 EncodeHintType::class.java
             )
@@ -60,14 +62,14 @@ class QRCodeGenarate {
             for (i in 0 until width) {
                 for (j in 0 until width) {
                     if (byteMatrix.get(i, j)) {
-                        graphics.fillRect(i, j, 1 , 1 )
+                        graphics.fillRect(i, j, 1, 1)
                     }
                 }
             }
             ImageIO.write(image, fileType, myFile)
             imagem.contentLength = myFile.length()
         } catch (e: Exception) {
-            e.printStackTrace()
+            //e.printStackTrace()
         }
         return imagem
     }

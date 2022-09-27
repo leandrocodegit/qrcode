@@ -3,6 +3,7 @@ package com.api.qrcode.service
 import com.api.qrcode.consumer.RabbitMQListener
 import com.api.qrcode.controller.request.QRCodeRequest
 import com.api.qrcode.controller.request.QRCodeStatusRequest
+import com.api.qrcode.controller.request.QRCodeValidRequest
 import com.api.qrcode.enuns.CodeError
 import com.api.qrcode.enuns.Status
 import com.api.qrcode.exceptions.EntityResponseException
@@ -38,6 +39,23 @@ class QRCodeService(
     fun listaTodosQRCodePorProduto(page: Pageable, codigo: String) =
         qrCodeRepository.findAllByProduto(produtoService.buscaProdutoBycodigo(codigo))
 
+    fun validaListaQRCode(list: List<QRCodeValidRequest>) : Boolean{
+
+       qrCodeRepository.findAllById(list.map { ObjectId(it.id)})
+           .also {
+           if(it.count() != list.size)
+               return false
+       }.forEach{ r ->
+            list.find { r.id.toString() == it.id }.let {
+                if(it != null){
+                     if ((r.preco != it.preco))
+                         return false
+                }else false
+            }
+        }
+        return true
+    }
+
     fun buscaQRCode(id: String): QRCode {
 
         return when (id.toIntOrNull()) {
@@ -56,7 +74,10 @@ class QRCodeService(
             ObjectId.get()
         ).apply {
             codigo = id.timestamp
-            imagem = qrcode.gerarQR(id.toString(), id.timestamp)
+            try{
+                imagem = qrcode.gerarQR(id.toString(), id.timestamp)
+            }catch (ex: Exception){ println("Erro ao gerar arquivo")
+            }
             qrCodeRepository.save(this)
         }
 
